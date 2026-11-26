@@ -237,18 +237,24 @@ button{font:inherit;color:inherit;background:none;border:0}
   .h-nav{grid-area:nav;padding-top:0;gap:9px}
   .pill{height:46px;box-shadow:0 4px 0 var(--negro)}
   .pill b{font-size:19px}
-  .stage{min-height:220px}
-  .card{top:13%;height:72%}
+  .stage{min-height:150px}
+  .card{top:22%;height:56%}
   .contact{padding:22px 22px 40px}
   .about{padding:16px 12px 12px}
   .bento{display:flex;flex-direction:column;min-height:0;flex:none}
   .b{min-height:190px}
-  .b-doing{min-height:0;padding:14px 18px;gap:6px}
-  .doing{font-size:13px;line-height:1.55}
+  .b-doing{min-height:0;padding:9px 14px;gap:3px}
+  .b-doing .b-label{font-size:8px}
+  .doing{font-size:11px;line-height:1.45}
   .marquee{height:44px}
-  .marquee-label{padding:0 12px;font-size:9px}
+  .marquee-label{padding:0 9px;font-size:7px;letter-spacing:.1em}
   .marquee-track span{font-size:13px;gap:14px;padding-left:14px}
   .marquee-track span::after{width:7px;height:7px}
+  .team{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .team li{padding:10px 9px 14px;gap:9px}
+  .t-pic{flex:none;height:84px;min-height:0}
+  .t-name{font-size:16px}
+  .t-role{font-size:11px}
   .b-head .b-label span:last-child{display:none}
   .about .about-top{padding-right:130px;font-size:10px}
   .options{grid-template-columns:1fr}
@@ -457,7 +463,7 @@ let H=0,total=0,GAP=14;
 function layout(){
   H=stage.clientHeight; GAP=window.innerWidth<820?10:14;
   let pos=0;
-  cards.forEach(c=>{c.w=Math.round(H*c.ratio*(window.innerWidth<820?.5:1)); c.pos=pos; c.el.style.width=c.w+'px'; pos+=c.w+GAP;});
+  cards.forEach(c=>{c.w=Math.round(H*c.ratio*(window.innerWidth<820?.3:1)); c.pos=pos; c.el.style.width=c.w+'px'; pos+=c.w+GAP;});
   total=pos;
 }
 layout(); addEventListener('resize',layout);
@@ -483,7 +489,7 @@ function tick(){
   vel+=((current-prev)-vel)*0.2; prev=current;
   const vw=stage.clientWidth, buf=H*2;
   const tilt=Math.max(-20,Math.min(20,vel*0.9));
-  const CURVE = window.innerWidth<820 ? .7 : 1;     // intensidad de la curvatura
+  const CURVE = window.innerWidth<820 ? 1.25 : 1;     // intensidad de la curvatura
   cards.forEach(c=>{
     const x=mod(c.pos+current+buf,total)-buf;
     // n: -1 (borde izq) · 0 (centro) · 1 (borde der) → superficie cóncava tipo pantalla curva
