@@ -517,7 +517,14 @@ let H=0,total=0,GAP=14;
 function layout(){
   H=stage.clientHeight; GAP=window.innerWidth<820?10:14;
   let pos=0;
-  cards.forEach(c=>{c.w=Math.round(H*c.ratio*(window.innerWidth<820?.3:1)); c.pos=pos; c.el.style.width=c.w+'px'; pos+=c.w+GAP;});
+const mobile=window.innerWidth<820;
+// celular: todas las tarjetas en 16:9, centradas en el carrusel · compu: igual que siempre
+const mw=Math.round(Math.min(window.innerWidth*.7,(H*.9)*16/9)), mh=Math.round(mw*9/16);
+cards.forEach(c=>{
+  c.w=mobile?mw:Math.round(H*c.ratio);
+  c.el.style.height=mobile?mh+'px':''; c.el.style.top=mobile?Math.round((H-mh)/2)+'px':'';
+  c.pos=pos; c.el.style.width=c.w+'px'; pos+=c.w+GAP;
+});
   total=pos;
 }
 layout(); addEventListener('resize',layout);
