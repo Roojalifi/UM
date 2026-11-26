@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UN MONTÓN · Productora audiovisual</title>
+<meta name="description" content="UN MONTÓN es una productora audiovisual de Buenos Aires con más de 10 años de experiencia. Comerciales, videoclips, aftermovies, contenido para redes y postproducción.">
+<meta name="theme-color" content="#1A1A1A">
+<meta property="og:type" content="website">
+<meta property="og:title" content="UN MONTÓN · Productora audiovisual">
+<meta property="og:description" content="Ya no hacemos solo contenido: hacemos UN MONTÓN. Productora audiovisual de Buenos Aires.">
+<meta property="og:image" content="assets/logo-coral.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/logo-negro.png">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#1A1A1A; --hueso:#E9EAE4; --gris:#8C8C88;
+  --coral:#EF4123; --arena:#F2C972; --menta:#7FCBAE;
+  --bg:var(--hueso); --fg:var(--negro);
+  --ease:cubic-bezier(.77,0,.18,1);
+  --out:cubic-bezier(.16,1,.3,1);
+  --clash:'Clash Display',system-ui,sans-serif;
+  --satoshi:'Satoshi',system-ui,sans-serif;
+  --pad:clamp(16px,3vw,44px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--satoshi);-webkit-font-smoothing:antialiased;
+  transition:background-color .8s var(--out),color .8s var(--out);overflow-x:hidden}
+body.locked{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block}
+.label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.label i{font-style:normal;color:var(--coral)}
+
+/* ---------- PRELOADER ---------- */
+.preloader{position:fixed;inset:0;z-index:200;pointer-events:none}
+.pl-layer{position:absolute;inset:0;transition:transform .7s var(--ease)}
+.pl-coral{background:var(--coral)}
+.pl-negro{background:var(--negro);display:grid;place-items:center}
+.pl-logo{position:relative;width:min(40vw,440px);aspect-ratio:2000/871;transition:transform .6s var(--ease)}
+@media (max-width:700px){.pl-logo{width:62vw}}
+.pl-logo img{width:100%;filter:brightness(0) invert(1);clip-path:inset(0 15% 0 0);
+  transform:translateY(22px);opacity:0;transition:transform .45s var(--ease),opacity .3s}
+.loading .pl-logo img{transform:none;opacity:1}
+.pl-dot{position:absolute;left:86.55%;top:64.9%;width:13.45%;aspect-ratio:1;border-radius:50%;background:#fff;opacity:0;transform-origin:50% 100%}
+.loading .pl-dot{opacity:1;animation:drop .95s .1s both}
+@keyframes drop{
+  0%{transform:translateY(-520%);animation-timing-function:cubic-bezier(.5,0,1,.6)}
+  40%{transform:translateY(0) scale(1.25,.75);animation-timing-function:cubic-bezier(0,.4,.5,1)}
+  58%{transform:translateY(-110%) scale(.95,1.05);animation-timing-function:cubic-bezier(.5,0,1,.6)}
+  74%{transform:translateY(0) scale(1.12,.88);animation-timing-function:cubic-bezier(0,.4,.5,1)}
+  86%{transform:translateY(-30%);animation-timing-function:cubic-bezier(.5,0,1,.6)}
+  95%{transform:translateY(0) scale(1.04,.96)}
+  100%{transform:none}
+}
+.pl-meta{position:absolute;left:0;right:0;bottom:36px;display:flex;justify-content:space-between;padding:0 var(--pad);
+  color:var(--gris);font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:0;transition:opacity .4s}
+.pl-count{font-family:var(--clash);font-weight:600;color:var(--hueso)}
+.loading .pl-meta{opacity:1}
+.leaving .pl-negro{transform:translateY(-100%)}
+.leaving .pl-coral{transform:translateY(-100%);transition-delay:.1s}
+.leaving .pl-logo{transform:translateY(-50px)}
+
+/* ---------- CURSOR ---------- */
+.cur,.cur-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:150;border-radius:50%}
+.cur{width:8px;height:8px;margin:-4px 0 0 -4px;background:#fff;mix-blend-mode:difference}
+.cur-ring{width:44px;height:44px;margin:-22px 0 0 -22px;display:grid;place-items:center}
+.cur-ring::before{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid #fff;mix-blend-mode:difference;
+  transition:transform .45s var(--out),background-color .3s,border-color .3s,opacity .3s}
+.cur-ring span{position:relative;font-family:var(--clash);font-weight:500;font-size:13px;letter-spacing:.04em;color:var(--negro);
+  opacity:0;transform:scale(.6);transition:opacity .25s,transform .45s var(--out)}
+.cur-ring.on::before{transform:scale(2.2);background:var(--coral);border-color:var(--coral);mix-blend-mode:normal}
+.cur-ring.on span{opacity:1;transform:none}
+.cur-ring.hide::before{opacity:0}
+@media (pointer:coarse){.cur,.cur-ring{display:none}}
+
+/* ---------- HEADER ---------- */
+.top{position:fixed;left:0;right:0;top:0;z-index:90;display:flex;justify-content:space-between;align-items:flex-start;padding:var(--pad);pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{background:var(--menta);border-radius:18px;padding:14px 18px;display:flex;align-items:center;gap:14px}
+.brand img{width:clamp(96px,9vw,132px)}
+.brand small{font-size:11px;line-height:1.3;letter-spacing:.08em;text-transform:uppercase;color:var(--negro);opacity:.75}
+.nav{display:flex;gap:8px}
+.nav a,.nav button{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:99px;font-weight:500;font-size:15px;
+  border:1px solid rgba(26,26,26,.12);transition:transform .4s var(--out)}
+.nav .n-about{background:var(--arena);color:var(--negro)}
+.nav .n-work{background:var(--hueso);color:var(--negro)}
+.nav .n-reel{background:var(--coral);color:var(--negro)}
+.nav .n-reel::before{content:"";width:0;height:0;border-left:8px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+body[data-bg=coral] .nav .n-reel{background:var(--negro);color:var(--coral)}
+.nav .n-contact{background:var(--negro);color:var(--hueso);border-color:rgba(233,234,228,.2)}
+@media (max-width:760px){.brand small,.nav .n-about,.nav .n-work{display:none}.brand{padding:11px 14px}.nav a,.nav button{height:40px;padding:0 15px;font-size:14px}}
+.progress{position:fixed;right:calc(var(--pad) - 10px);top:50%;z-index:90;width:2px;height:120px;margin-top:-60px;background:rgba(140,140,136,.3);border-radius:2px;overflow:hidden}
+.progress b{position:absolute;inset:0;background:var(--coral);transform-origin:top;transform:scaleY(0)}
+@media (max-width:760px){.progress{display:none}}
+
+/* ---------- HERO: el nombre como ventana a los videos ---------- */
+.hero{position:relative;height:340vh;background:var(--hueso)}
+.hero-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1s}
+.hero video.off{opacity:0}
+#mask{position:absolute;inset:0;width:100%;height:100%}
+.hero-foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;padding:var(--pad);
+  color:#fff;mix-blend-mode:difference;font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+.hero-foot .now{font-family:var(--clash);font-size:clamp(18px,1.6vw,26px);letter-spacing:0;text-transform:none;text-align:center}
+.hero-foot .now small{display:block;font-family:var(--satoshi);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7;margin-bottom:4px}
+.scroll-hint{display:flex;align-items:center;gap:10px}
+.scroll-hint i{display:block;width:1px;height:34px;background:currentColor;transform-origin:top;animation:hint 1.8s var(--ease) infinite}
+@keyframes hint{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (max-width:760px){.hero-foot .side{display:none}.hero-foot{justify-content:center}}
+.reel-btn{position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;background:var(--coral);color:var(--negro);
+  display:grid;place-items:center;font-family:var(--clash);font-weight:600;font-size:20px;transform:scale(0);transition:transform .7s var(--out)}
+.reel-btn.show{transform:scale(1)}
+
+/* ---------- MANIFIESTO / NOSOTROS ---------- */
+section{position:relative}
+.manifest{padding:22vh var(--pad) 16vh}
+.manifest .label{margin-bottom:5vh;display:flex;gap:18px}
+.big{font-family:var(--clash);font-weight:600;font-size:clamp(44px,8.2vw,150px);line-height:.95;letter-spacing:-.01em;max-width:14ch}
+.big .w{display:inline-block;opacity:.12;transition:opacity .15s linear}
+.big em{font-style:normal;color:var(--coral)}
+.intro{display:grid;grid-template-columns:1fr 1fr;gap:6vw;margin-top:12vh;align-items:start}
+.intro p{font-size:clamp(19px,1.7vw,28px);line-height:1.38;max-width:30ch}
+.intro p+p{margin-top:.8em}
+.intro strong{font-weight:700}
+.badge{position:relative;width:clamp(150px,14vw,220px);aspect-ratio:1;justify-self:start}
+.badge svg{position:absolute;inset:0;width:100%;height:100%}
+.badge text{font-family:var(--satoshi);font-size:9.4px;letter-spacing:.2em;font-weight:500;fill:currentColor;text-transform:uppercase}
+.badge b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--clash);font-weight:600;font-size:clamp(40px,4vw,62px);color:var(--coral)}
+@media (max-width:760px){.intro{grid-template-columns:1fr}.badge{order:2}}
+
+/* ---------- QUÉ HACEMOS ---------- */
+.doing{padding:6vh 0 18vh;overflow:hidden}
+.doing .label{padding:0 var(--pad);margin-bottom:4vh}
+.track{display:flex;white-space:nowrap;will-change:transform}
+.track span{font-family:var(--clash);font-weight:500;font-size:clamp(56px,10vw,190px);line-height:1;padding-right:.35em}
+.track span:nth-child(even){color:transparent;-webkit-text-stroke:1.5px var(--fg)}
+.track i{font-style:normal;color:var(--coral);padding-left:.35em}
+
+/* ---------- PROYECTOS ---------- */
+.work{padding:20vh var(--pad) 18vh}
+.work-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6vh;gap:20px}
+.work-head h2{font-family:var(--clash);font-weight:600;font-size:clamp(44px,7vw,120px);line-height:.9}
+.work-head h2 sup{font-size:.28em;color:var(--coral);vertical-align:top;margin-left:.2em}
+.work-head p{max-width:30ch;color:var(--gris);font-size:15px;line-height:1.5}
+.list{list-style:none;border-top:1px solid rgba(140,140,136,.35)}
+.row{display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:20px;padding:clamp(14px,1.6vw,22px) 0;border-bottom:1px solid rgba(140,140,136,.35);
+  cursor:pointer;transition:opacity .4s}
+.list.hovering .row:not(.act){opacity:.28}
+.r-num{font-size:13px;color:var(--gris);letter-spacing:.1em}
+.r-title{display:block;overflow:hidden;font-family:var(--clash);font-weight:500;font-size:clamp(30px,4.6vw,82px);line-height:1.08;height:1.08em}
+.r-title .roll{display:block;transition:transform .6s var(--out)}
+.r-title .roll b{display:block;font-weight:inherit}
+.r-title .roll b+b{color:var(--coral)}
+.row.act .roll{transform:translateY(-50%)}
+.r-tag{font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+@media (max-width:760px){.row{grid-template-columns:34px 1fr;gap:12px}.r-tag{grid-column:2;justify-self:start;font-size:11px;padding:5px 10px;margin-top:-4px}}
+.preview{position:fixed;left:0;top:0;z-index:60;width:clamp(260px,27vw,460px);aspect-ratio:16/10;pointer-events:none;
+  border-radius:18px;overflow:hidden;clip-path:inset(50% 50% 50% 50% round 18px);transition:clip-path .7s var(--out);will-change:transform}
+.preview.show{clip-path:inset(0 0 0 0 round 18px)}
+.preview video{width:100%;height:100%;object-fit:cover;transform:scale(1.25);transition:transform .9s var(--out)}
+.preview.show video{transform:scale(1)}
+.preview em{position:absolute;left:14px;bottom:12px;font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  background:var(--hueso);color:var(--negro);padding:6px 10px;border-radius:99px}
+@media (pointer:coarse){.preview{display:none}}
+
+/* ---------- QUIÉNES SOMOS ---------- */
+.team{padding:20vh var(--pad) 18vh}
+.team .label{margin-bottom:6vh}
+.people{list-style:none}
+.person{display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:2vh 0;border-bottom:1px solid rgba(26,26,26,.18);cursor:default}
+.person h3{font-family:var(--clash);font-weight:600;font-size:clamp(64px,13vw,250px);line-height:.9;letter-spacing:-.02em;
+  color:transparent;-webkit-text-stroke:1.5px var(--negro);transition:color .5s var(--out),transform .7s var(--out)}
+.person:hover h3{color:var(--negro);transform:translateX(2vw)}
+.person p{font-size:clamp(15px,1.4vw,22px);text-align:right;max-width:18ch;line-height:1.3}
+.person .ini{display:none}
+@media (pointer:coarse),(max-width:760px){
+  .person{align-items:center;justify-content:flex-start}
+  .person h3{color:var(--negro);-webkit-text-stroke:0;font-size:clamp(46px,14vw,120px)}
+  .person p{text-align:left;font-size:14px}
+  .person .ini{display:grid;place-items:center;flex:none;width:58px;height:58px;border-radius:50%;font-family:var(--clash);font-weight:600;font-size:26px}
+  .person>div{display:flex;flex-direction:column;gap:6px}
+}
+.blob{position:fixed;left:0;top:0;z-index:60;width:clamp(180px,17vw,280px);aspect-ratio:1;border-radius:50%;pointer-events:none;
+  display:grid;place-items:center;font-family:var(--clash);font-weight:600;font-size:clamp(90px,9vw,150px);transform:scale(0);transition:background-color .4s,color .4s}
+@media (pointer:coarse){.blob{display:none}}
+
+/* ---------- CLIENTES ---------- */
+.clients{padding:16vh 0;overflow:hidden}
+.clients .label{padding:0 var(--pad);margin-bottom:5vh;color:var(--coral)}
+.clients .track span{font-family:var(--clash);font-weight:400;font-size:clamp(34px,5vw,86px);text-transform:uppercase;color:var(--fg);-webkit-text-stroke:0;padding:0}
+.clients .track span::after{content:"";display:inline-block;width:.32em;height:.32em;border-radius:50%;margin:0 .6em;vertical-align:middle;background:var(--coral)}
+.clients .track span:nth-child(3n+2)::after{background:var(--arena)}
+.clients .track span:nth-child(3n)::after{background:var(--menta)}
+.clients .track+.track{margin-top:2vh}
+
+/* ---------- CONTACTO ---------- */
+.contact{min-height:100vh;padding:20vh var(--pad) var(--pad);display:flex;flex-direction:column}
+.hello{font-family:var(--clash);font-weight:600;font-size:clamp(60px,13.5vw,260px);line-height:.88;letter-spacing:-.02em}
+.hello .wd{font-style:normal;white-space:nowrap}
+.hello span{display:inline-block;will-change:transform}
+.hello .l2{color:var(--hueso)}
+.contact-row{display:flex;justify-content:space-between;align-items:flex-end;gap:5vw;margin-top:8vh;flex-wrap:wrap}
+.contact-row p{font-size:clamp(18px,1.6vw,26px);line-height:1.38;max-width:28ch}
+.ctas{display:flex;gap:2vw}
+.cta{width:clamp(150px,15vw,230px);aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;
+  color:var(--negro);text-align:center;transition:transform .5s var(--out)}
+.cta b{font-family:var(--clash);font-weight:600;font-size:clamp(22px,2vw,32px)}
+.cta small{font-size:13px;opacity:.75}
+.cta.wa{background:var(--menta)}
+.cta.ml{background:var(--arena)}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:auto;padding-top:12vh;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.ig{display:inline-flex;align-items:center;gap:10px;background:var(--negro);color:var(--hueso);padding:8px 16px 8px 8px;border-radius:99px;text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;transition:background-color .3s}
+.ig i{width:28px;height:28px;border-radius:50%;background:var(--hueso);display:grid;place-items:center}
+.ig svg{width:15px;height:15px}
+.ig:hover{background:var(--hueso);color:var(--negro)}
+.ig:hover i{background:var(--negro)}
+.ig:hover svg{stroke:var(--hueso)}
+@media (max-width:760px){.foot .mid{display:none}.ctas{gap:12px}.cta{width:42vw}}
+
+/* ---------- REPRODUCTOR ---------- */
+.player{position:fixed;inset:0;z-index:120;background:var(--negro);color:var(--hueso);transform:translateY(100%);transition:transform .9s var(--ease);
+  display:flex;flex-direction:column;padding:var(--pad)}
+.player.open{transform:none}
+.player header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2vh}
+.player h4{font-family:var(--clash);font-weight:600;font-size:clamp(24px,2.6vw,42px)}
+.player h4 small{display:block;font-family:var(--satoshi);font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
+.player .x{width:52px;height:52px;border-radius:50%;background:var(--coral);color:var(--negro);font-size:26px}
+.player video{flex:1;min-height:0;width:100%;border-radius:16px;background:#000}
+.toast{position:fixed;left:50%;bottom:30px;z-index:130;background:var(--negro);color:var(--hueso);padding:14px 22px;border-radius:99px;font-weight:500;
+  transform:translate(-50%,calc(100% + 60px));transition:transform .6s var(--out)}
+.toast.show{transform:translate(-50%,0)}
+</style>
+</head>
+<body class="locked">
+
+<div class="preloader" id="preloader">
+  <div class="pl-layer pl-coral"></div>
+  <div class="pl-layer pl-negro">
+    <div class="pl-logo"><img src="assets/logo-coral.png" alt="UN MONTÓN"><span class="pl-dot"></span></div>
+    <div class="pl-meta"><span>Productora audiovisual</span><span class="pl-count" id="plCount">0%</span><span>Buenos Aires · 2027</span></div>
+  </div>
+</div>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="ring"><span id="ringTxt">Ver</span></div>
+
+<header class="top">
+  <a class="brand mag" href="#top" data-go="top"><img src="assets/logo-negro.png" alt="UN MONTÓN"><small>Productora audiovisual<br>Buenos Aires</small></a>
+  <nav class="nav">
+    <a class="n-about mag" href="#nosotros" data-go="nosotros">Nosotros</a>
+    <a class="n-work mag" href="#proyectos" data-go="proyectos">Proyectos</a>
+    <button class="n-reel mag" data-reel>Reel</button>
+    <a class="n-contact mag" href="#contacto" data-go="contacto">Contacto</a>
+  </nav>
+</header>
+<div class="progress"><b id="prog"></b></div>
+
+<!-- HERO -->
+<section class="hero" id="top" data-bg="hueso">
+  <div class="hero-pin" id="heroPin" data-cursor="Cambiar">
+    <video id="hvA" muted loop playsinline preload="auto"></video>
+    <video id="hvB" class="off" muted loop playsinline preload="auto"></video>
+    <canvas id="mask"></canvas>
+    <button class="reel-btn" id="heroReel" data-reel data-cursor="Play">Ver reel</button>
+    <div class="hero-foot">
+      <span class="side">Productora audiovisual<br>Buenos Aires</span>
+      <span class="now" id="heroNow"><small>En pantalla</small>Futttura</span>
+      <span class="side scroll-hint">Scrolleá <i></i></span>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section class="manifest" id="nosotros" data-bg="hueso">
+  <div class="label"><span>UN MONTÓN</span><i>/</i><span>Productora audiovisual · Buenos Aires</span></div>
+  <h2 class="big" id="manifest">Ya no hacemos solo contenido: hacemos <em>UN MONTÓN.</em></h2>
+  <div class="intro">
+    <div class="badge" id="badge">
+      <svg viewBox="0 0 100 100"><defs><path id="circ" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs>
+        <text><textPath href="#circ">Más de 10 años de experiencia · Buenos Aires · </textPath></text></svg>
+      <b>10+</b>
+    </div>
+    <div>
+      <p>Somos una productora audiovisual de Buenos Aires con <strong>más de 10 años de experiencia.</strong> Nos renovamos para dar un paso adelante, con un equipo joven, ideas nuevas y las ganas de asumir grandes desafíos.</p>
+      <p>Cada proyecto es único: <strong>lo pensamos con vos, de principio a fin.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ HACEMOS -->
+<section class="doing" data-bg="hueso">
+  <div class="label">Qué hacemos</div>
+  <div class="track" data-speed="1"><span>Comerciales<i>/</i></span><span>Videoclips<i>/</i></span><span>Aftermovies<i>/</i></span><span>Contenido para redes<i>/</i></span><span>Documentales y corporativos<i>/</i></span><span>Postproducción<i>/</i></span></div>
+</section>
+
+<!-- PROYECTOS -->
+<section class="work" id="proyectos" data-bg="negro">
+  <div class="work-head">
+    <h2>Proyectos<sup id="count">29</sup></h2>
+    <p>Pasá el mouse por cada nombre para ver un adelanto. Hacé click para verlo completo.</p>
+  </div>
+  <ul class="list" id="list"></ul>
+</section>
+<div class="preview" id="preview"><video id="pvMini" muted loop playsinline preload="none"></video><em id="pvTag"></em></div>
+
+<!-- QUIÉNES SOMOS -->
+<section class="team" data-bg="arena">
+  <div class="label">Quiénes somos</div>
+  <ul class="people" id="people">
+    <li class="person" data-ini="J" data-bgc="#EF4123" data-fgc="#E9EAE4"><span class="ini" style="background:#EF4123;color:#E9EAE4">J</span><div><h3>Josefina</h3><p>Producción</p></div></li>
+    <li class="person" data-ini="R" data-bgc="#1A1A1A" data-fgc="#7FCBAE"><span class="ini" style="background:#1A1A1A;color:#7FCBAE">R</span><div><h3>Román</h3><p>Dirección de fotografía y área técnica</p></div></li>
+    <li class="person" data-ini="L" data-bgc="#E9EAE4" data-fgc="#1A1A1A"><span class="ini" style="background:#E9EAE4;color:#1A1A1A">L</span><div><h3>Lucas</h3><p>Desarrollo comercial y producción</p></div></li>
+  </ul>
+</section>
+<div class="blob" id="blob">J</div>
+
+<!-- CONFÍAN EN NOSOTROS -->
+<section class="clients" data-bg="hueso">
+  <div class="label">Confían en nosotros</div>
+  <div class="track" data-speed="1"><span>Aerolíneas Argentinas</span><span>YPF</span><span>Sony Music</span><span>AFA</span><span>Pandora</span><span>Arcor</span></div>
+  <div class="track" data-speed="-1"><span>Luis Fonsi</span><span>Tini Stoessel</span><span>Danny Ocean</span><span>Tierra de Pecado</span><span>Hola Sim</span><span>Ake Music</span></div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contact" id="contacto" data-bg="coral">
+  <div class="label">Contacto</div>
+  <h2 class="hello" id="hello"><div class="l1">Hagamos</div><div class="l2">UN MONTÓN.</div></h2>
+  <div class="contact-row">
+    <p>Contanos sobre tu próximo proyecto. Elegí por dónde escribirnos y te respondemos a la brevedad.</p>
+    <div class="ctas">
+      <a class="cta wa mag" href="#" id="ctaWhatsapp" data-cursor="Chat"><small>WhatsApp</small><b>Escribinos</b><small>un mensaje</small></a>
+      <a class="cta ml mag" href="#" id="ctaMail" data-cursor="Mail"><small>Mail</small><b>Correo</b><small>hola@unmonton.com</small></a>
+    </div>
+  </div>
+  <div class="foot">
+    <span>© UN MONTÓN 2027</span>
+    <a class="mid" href="mailto:hola@unmonton.com">hola@unmonton.com</a>
+    <a class="ig mag" href="https://www.instagram.com/unmontoncontenidos/" target="_blank" rel="noopener"><i><svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="#1A1A1A"/></svg></i>Instagram</a>
+  </div>
+</section>
+
+<section class="player" id="player" aria-hidden="true">
+  <header><h4 id="pTitle"></h4><button class="x" id="pClose" aria-label="Cerrar">×</button></header>
+  <video id="pVideo" controls playsinline></video>
+</section>
+<div class="toast" id="toast">Muy pronto</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+/* ===== Proyectos (archivos dentro de /videos) ===== */
+const PROJECTS = [
+  ["1_FUTTTURA LATAM.mp4","Futttura","Latam"],
+  ["KALEU KALEU_V4.mp4","Kaleu Kaleu","Videoclip"],
+  ["PANDORA x Luisa Sonza___2.mp4","Pandora × Luísa Sonza","Marca"],
+  ["Luis Fonsi_Luna park_ALTA.mp4","Luis Fonsi","Luna Park"],
+  ["AFA_v10_ALTA.mp4","AFA","Spot"],
+  ["MOR - RECAP.mp4","MOR","Recap"],
+  ["Chocolinas Bumper 1 16x9.mp4","Chocolinas","Bumper"],
+  ["FUTTURA_TOUR 1ER PARTE_RECAP.mp4","Futttura Tour","Recap"],
+  ["Mar Esmeralda version 2.mp4","Mar Esmeralda","Film"],
+  ["HOLIDAYS MOMENTS_30s_16x9.mp4","Holidays Moments","Spot 30”"],
+  ["FER DENTE - Lanzamiento VOY_clip 1MIn_alta.mp4","Fer Dente · Voy","Lanzamiento"],
+  ["TierraDePecado_HD1080.mp4","Tierra de Pecado","Ficción"],
+  ["1_LA CASA_BS AS.mp4","La Casa","Buenos Aires"],
+  ["Talisman_30s_16x9-.mp4","Talisman","Spot 30”"],
+  ["FLOR BERTOTTI VID 2.mp4","Flor Bertotti","Videoclip"],
+  ["BTS Martha VC FINAL YT.mp4","Martha","Detrás de escena"],
+  ["01_Uruguay Recpa.mp4","Uruguay","Recap"],
+  ["Holyday TIMELESS_30s_16x9.mp4","Holiday Timeless","Spot 30”"],
+  ["Cali - Final 13 10.mp4","Cali","Film"],
+  ["VALENTINES_30seg.mp4","Valentine’s","Spot 30”"],
+  [" Expansion FINAL_1.mp4","Expansión","Marca"],
+  ["FUTTTURA_Recap Mexico.mp4","Futttura","Recap México"],
+  ["CALCIO_B_16.9.mp4","Calcio","Spot"],
+  ["COLAGENO_B_16.9.mp4","Colágeno","Spot"],
+  ["DIETA CONTROL_B_16.9.mp4","Dieta Control","Spot"],
+  ["TDP_16X9_final.mp4","TDP","16×9"],
+  ["il volo/Halleluja.mp4","Il Volo","Halleluja"],
+  ["yas/YAS_LA NIÑA_H264_3840x2160.mp4","YAS","La Niña"],
+  ["fiat cronos/Cronos Tecnologia y Pantalla v4.mp4","Fiat Cronos","Tecnología"],
+];
+const SHOWREEL = PROJECTS[0];          // cambiá por el archivo del showreel cuando lo tengas
+const HERO = [0,2,3,4,1];              // videos que se ven dentro de las letras del inicio
+const CONTACT = {
+  whatsapp: '',   // ej: '5491112345678'
+  email: ''       // ej: 'hola@unmonton.com'
+};
+const COLORS = {hueso:['#E9EAE4','#1A1A1A'],negro:['#1A1A1A','#E9EAE4'],arena:['#F2C972','#1A1A1A'],coral:['#EF4123','#1A1A1A']};
+const ACCENTS = ['#EF4123','#F2C972','#7FCBAE','#E9EAE4'];
+const src = f => encodeURI('videos-web/'+f);
+const $ = id => document.getElementById(id);
+const clamp = (v,a=0,b=1) => Math.min(b,Math.max(a,v));
+const lerp = (a,b,t) => a+(b-a)*t;
+const fine = matchMedia('(pointer:fine)').matches;
+
+/* ===== Scroll suave ===== */
+const lenis = window.Lenis ? new Lenis({lerp:.09}) : null;
+if(lenis) lenis.stop();
+function go(id){const el=$(id); lenis?lenis.scrollTo(el,{duration:1.6}):el.scrollIntoView({behavior:'smooth'})}
+document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();go(a.dataset.go)});
+
+/* ===== Intro ===== */
+const pre=$('preloader'), plCount=$('plCount');
+requestAnimationFrame(()=>requestAnimationFrame(()=>pre.classList.add('loading')));
+let pc=0; const pcT=setInterval(()=>{pc=Math.min(100,pc+Math.ceil(Math.random()*7));plCount.textContent=pc+'%';if(pc>=100)clearInterval(pcT)},28);
+let introT=0;  // 0 → 1 cuando aparece el nombre
+setTimeout(()=>{
+  pre.classList.add('leaving');
+  setTimeout(()=>{document.body.classList.remove('locked');lenis&&lenis.start();introStart=performance.now()},250);
+  setTimeout(()=>pre.remove(),1000);
+},1150);
+let introStart=0;
+
+/* ===== Hero: videos dentro de las letras ===== */
+const hv=[$('hvA'),$('hvB')]; let hvOn=0, heroIdx=0;
+function setHero(i){
+  heroIdx=(i+HERO.length)%HERO.length; const p=PROJECTS[HERO[heroIdx]];
+  const next=hv[1-hvOn]; next.src=src(p[0]); next.currentTime=0;
+  next.play().catch(()=>{});
+  const swap=()=>{next.classList.remove('off');hv[hvOn].classList.add('off');const old=hv[hvOn];setTimeout(()=>old.pause(),1000);hvOn=1-hvOn};
+  next.readyState>=2?swap():next.addEventListener('loadeddata',swap,{once:true});
+  $('heroNow').innerHTML=`<small>En pantalla · ${p[2]}</small>${p[1]}`;
+}
+hv[0].src=src(PROJECTS[HERO[0]][0]); hv[0].play().catch(()=>{});
+let heroTimer=setInterval(()=>setHero(heroIdx+1),8000);
+$('heroPin').addEventListener('click',e=>{if(e.target.closest('[data-reel]'))return;setHero(heroIdx+1);clearInterval(heroTimer);heroTimer=setInterval(()=>setHero(heroIdx+1),8000)});
+
+const cv=$('mask'), ctx=cv.getContext('2d'); let W,H,DPR,fontPx,lines,focus;
+function layout(){
+  DPR=Math.min(2,devicePixelRatio||1); W=innerWidth; H=$('heroPin').offsetHeight;
+  cv.width=W*DPR; cv.height=H*DPR;
+  const mobile=W<760; lines=mobile?['UN','MONTÓN']:['UN MONTÓN'];
+  ctx.font='600 100px "Clash Display"';
+  const widest=Math.max(...lines.map(l=>ctx.measureText(l).width));
+  fontPx=100*(W*(mobile?.88:.92))/widest;
+  ctx.font=`600 ${fontPx}px "Clash Display"`;
+  // punto de zoom: el trazo izquierdo de la M
+  const last=lines[lines.length-1], lw=ctx.measureText(last).width;
+  const mStart=mobile?0:ctx.measureText('UN ').width;
+  const lineX=W/2-lw/2, lh=fontPx*.86, blockH=lh*lines.length;
+  focus={x:lineX+mStart+fontPx*.07, y:H/2-blockH/2+lh*(lines.length-1)+lh*.5};
+}
+function drawMask(p,intro){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.globalCompositeOperation='source-over';
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#E9EAE4'; ctx.fillRect(0,0,W,H);
+  ctx.globalCompositeOperation='destination-out';
+  const e=p*p*p, s=(1+e*70)*(1.12-.12*intro);
+  ctx.translate(focus.x,focus.y); ctx.scale(s,s); ctx.translate(-focus.x,-focus.y);
+  ctx.font=`600 ${fontPx}px "Clash Display"`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.globalAlpha=intro;
+  const lh=fontPx*.86, top=H/2-lh*lines.length/2+lh/2;
+  lines.forEach((l,i)=>ctx.fillText(l,W/2,top+i*lh+fontPx*.04));
+  ctx.globalAlpha=1;
+  cv.style.opacity=1-clamp((p-.82)/.14);
+}
+
+/* ===== Proyectos ===== */
+const list=$('list');
+list.innerHTML=PROJECTS.map((p,i)=>`<li class="row" data-i="${i}" data-cursor="Ver"><span class="r-num">${String(i+1).padStart(2,'0')}</span>
+  <span class="r-title"><span class="roll"><b>${p[1]}</b><b>${p[1]}</b></span></span><span class="r-tag" style="color:${ACCENTS[i%3]}">${p[2]}</span></li>`).join('');
+$('count').textContent=PROJECTS.length;
+const preview=$('preview'), mini=$('pvMini'); let curRow=-1;
+list.addEventListener('pointerover',e=>{
+  const r=e.target.closest('.row'); if(!r||!fine) return;
+  const i=+r.dataset.i; if(i===curRow) return;
+  list.querySelector('.row.act')?.classList.remove('act'); r.classList.add('act'); list.classList.add('hovering');
+  curRow=i; mini.src=src(PROJECTS[i][0]); mini.play().catch(()=>{});
+  $('pvTag').textContent=PROJECTS[i][2]; preview.classList.add('show');
+});
+list.addEventListener('pointerleave',()=>{list.querySelector('.row.act')?.classList.remove('act');list.classList.remove('hovering');preview.classList.remove('show');curRow=-1;setTimeout(()=>{if(curRow<0)mini.pause()},500)});
+list.addEventListener('click',e=>{const r=e.target.closest('.row'); if(r) openPlayer(PROJECTS[+r.dataset.i])});
+
+/* ===== Equipo: inicial que sigue al mouse ===== */
+const blob=$('blob'); let blobOn=false;
+document.querySelectorAll('.person').forEach(p=>{
+  p.addEventListener('pointerenter',()=>{blob.textContent=p.dataset.ini;blob.style.background=p.dataset.bgc;blob.style.color=p.dataset.fgc;blobOn=true});
+  p.addEventListener('pointerleave',()=>blobOn=false);
+});
+
+/* ===== Contacto: letras que reaccionan al mouse ===== */
+const hello=$('hello');
+hello.querySelectorAll('div').forEach(d=>{d.innerHTML=d.textContent.split(' ').map(w=>`<em class="wd">${[...w].map(c=>`<span>${c}</span>`).join('')}</em>`).join(' ')});
+const letters=[...hello.querySelectorAll('span')].map(el=>({el,y:0,r:0}));
+
+/* ===== Mouse ===== */
+const cur=$('cur'), ring=$('ring'), ringTxt=$('ringTxt');
+let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my, px=mx, py=my, bx=mx, by=my, bs=0, pvx=mx, pvy=my;
+addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY});
+document.addEventListener('pointerover',e=>{
+  const t=e.target.closest('[data-cursor]');
+  if(t){ringTxt.textContent=t.dataset.cursor;ring.classList.add('on')} else ring.classList.remove('on');
+  ring.classList.toggle('hide',!!e.target.closest('.person'));
+});
+const mags=[...document.querySelectorAll('.mag')];
+
+/* ===== Marquesinas que aceleran con el scroll ===== */
+const tracks=[...document.querySelectorAll('.track')].map(t=>{t.innerHTML+=t.innerHTML;return{t,x:0,dir:+t.dataset.speed}});
+
+/* ===== Fondo que cambia por sección ===== */
+const secs=[...document.querySelectorAll('section[data-bg]')];
+let bgNow='';
+
+/* ===== Loop principal ===== */
+const words=[]; (function split(){
+  const h=$('manifest'); const walk=n=>{[...n.childNodes].forEach(c=>{
+    if(c.nodeType===3){const f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(w=>{if(!w)return;if(/^\s+$/.test(w)){f.append(w);return}const s=document.createElement('span');s.className='w';s.textContent=w;f.append(s);words.push(s)});c.replaceWith(f)}
+    else walk(c)})}; walk(h);
+})();
+let lastY=scrollY, vel=0, fontsReady=false;
+document.fonts.load('600 100px "Clash Display"').then(()=>{fontsReady=true;layout()});
+addEventListener('resize',()=>{if(fontsReady)layout()});
+
+function frame(t){
+  lenis&&lenis.raf(t);
+  const y=scrollY, vh=innerHeight;
+  vel=lerp(vel,y-lastY,.15); lastY=y;
+
+  // hero
+  if(fontsReady){
+    const hero=$('top'), p=clamp(y/(hero.offsetHeight-vh));
+    const intro=introStart?clamp((t-introStart)/1100):0, ie=1-Math.pow(1-intro,4);
+    if(y<hero.offsetHeight) drawMask(p,ie);
+    $('heroReel').classList.toggle('show',p>.9&&p<1.2);
+  }
+  // progreso
+  $('prog').style.transform=`scaleY(${clamp(y/(document.documentElement.scrollHeight-vh))})`;
+  // manifiesto palabra por palabra
+  for(const w of words){const top=w.getBoundingClientRect().top; w.style.opacity=.12+.88*clamp((vh*.82-top)/(vh*.35))}
+  // insignia
+  $('badge').querySelector('svg').style.transform=`rotate(${y*.12}deg)`;
+  // marquesinas
+  if(Math.abs(vel)>.5) tracks.forEach(k=>k.sgn=Math.sign(vel));
+  tracks.forEach(k=>{const half=k.t.scrollWidth/2; k.x-=(0.6+Math.abs(vel)*.35)*k.dir*(k.sgn||1);
+    if(k.x<-half)k.x+=half; if(k.x>0)k.x-=half; k.t.style.transform=`translate3d(${k.x}px,0,0)`});
+  // color de fondo
+  const mid=vh*.5; let act=secs[0];
+  for(const s of secs){const r=s.getBoundingClientRect(); if(r.top<=mid&&r.bottom>mid){act=s;break}}
+  if(act.dataset.bg!==bgNow){bgNow=act.dataset.bg;const c=COLORS[bgNow];document.body.style.setProperty('--bg',c[0]);document.body.style.setProperty('--fg',c[1]);
+    document.body.dataset.bg=bgNow;document.querySelector('meta[name=theme-color]').content=c[0]}
+
+  // revisar lo que hay bajo el mouse aunque solo se mueva el scroll
+  if(fine&&Math.abs(vel)>.3){const el=document.elementFromPoint(mx,my);
+    if(!el?.closest('.person'))blobOn=false;
+    if(curRow>=0&&!el?.closest('#list'))list.dispatchEvent(new Event('pointerleave'));}
+  // cursor
+  rx=lerp(rx,mx,.18); ry=lerp(ry,my,.18);
+  cur.style.transform=`translate3d(${mx}px,${my}px,0)`;
+  ring.style.transform=`translate3d(${rx}px,${ry}px,0)`;
+  // vista previa de proyectos
+  const dx=mx-pvx; pvx=lerp(pvx,mx,.11); pvy=lerp(pvy,my,.11);
+  preview.style.transform=`translate3d(${pvx+30}px,${pvy-preview.offsetHeight/2}px,0) rotate(${clamp(dx*.06,-12,12)}deg)`;
+  // inicial del equipo
+  bx=lerp(bx,mx,.14); by=lerp(by,my,.14); bs=lerp(bs,blobOn?1:0,.12);
+  blob.style.transform=`translate3d(${bx-blob.offsetWidth/2}px,${by-blob.offsetHeight/2}px,0) scale(${bs}) rotate(${clamp((mx-bx)*.15,-25,25)}deg)`;
+  // imanes
+  if(fine) for(const m of mags){const r=m.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,d=Math.hypot(mx-cx,my-cy),R=Math.max(r.width,r.height)/2+30;
+    m.style.transform=d<R?`translate(${clamp((mx-cx)*.25,-14,14)}px,${clamp((my-cy)*.25,-14,14)}px)`:''}
+  // letras de contacto
+  if(fine){const hr=hello.getBoundingClientRect(); if(hr.bottom>0&&hr.top<vh) for(const L of letters){const r=L.el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,
+    d=Math.hypot(mx-cx,my-cy),f=clamp(1-d/(r.height*1.4)); L.y=lerp(L.y,-f*r.height*.28,.15); L.r=lerp(L.r,f*(mx<cx?8:-8),.15);
+    L.el.style.transform=`translateY(${L.y}px) rotate(${L.r}deg)`}}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ===== Reproductor ===== */
+const player=$('player'), pv=$('pVideo');
+function openPlayer(p){$('pTitle').innerHTML=`<small>${p[2]}</small>${p[1]}`;pv.src=src(p[0]);player.classList.add('open');lenis&&lenis.stop();pv.play().catch(()=>{})}
+function closePlayer(){player.classList.remove('open');lenis&&lenis.start();setTimeout(()=>{pv.pause();pv.removeAttribute('src');pv.load()},900)}
+$('pClose').onclick=closePlayer;
+addEventListener('keydown',e=>{if(e.key==='Escape')closePlayer()});
+document.querySelectorAll('[data-reel]').forEach(b=>b.onclick=()=>openPlayer([SHOWREEL[0],'Reel','UN MONTÓN · 2027']));
+
+/* ===== Contacto ===== */
+const toast=$('toast'); let toastT;
+function soon(){toast.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toast.classList.remove('show'),2200)}
+$('ctaWhatsapp').onclick=e=>{e.preventDefault(); if(!CONTACT.whatsapp) return soon();
+  window.open('https://wa.me/'+CONTACT.whatsapp+'?text='+encodeURIComponent('Hola UN MONTÓN! Quiero contarles sobre un proyecto.'),'_blank')};
+$('ctaMail').onclick=e=>{e.preventDefault(); if(!CONTACT.email) return soon();
+  location.href='mailto:'+CONTACT.email+'?subject='+encodeURIComponent('Nuevo proyecto')};
+</script>
+</body>
+</html>

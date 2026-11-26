@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un Montón · Opción 3</title>
+<link rel="icon" href="assets/logo-coral.png">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#1A1A1A; --hueso:#E9EAE4; --gris:#8C8C88;
+  --coral:#EF4123; --arena:#F2C972; --menta:#7FCBAE;
+  --ease:cubic-bezier(.77,0,.18,1);
+  --clash:'Clash Display',system-ui,sans-serif;
+  --satoshi:'Satoshi',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--hueso)}
+body{color:var(--negro);font-family:var(--satoshi);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* ---------- INTRO ---------- */
+.intro{position:fixed;inset:0;z-index:100;background:var(--negro);display:grid;place-items:center;transition:transform .75s var(--ease)}
+.intro img{width:min(34vw,380px);clip-path:inset(0 100% 0 0);transition:clip-path .55s var(--ease)}
+.intro.in img{clip-path:inset(0 0 0 0)}
+.intro.out{transform:translateY(-100%)}
+
+/* ---------- PARED ---------- */
+.wall{position:fixed;inset:0;overflow:hidden;cursor:none;touch-action:none;user-select:none}
+.tile{position:absolute;left:0;top:0;border-radius:18px;overflow:hidden;background:var(--negro);will-change:transform;transform-origin:center}
+.tile video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;opacity:.92;transition:opacity .4s}
+.tile.on video{opacity:1}
+.tile::after{content:attr(data-n);position:absolute;left:12px;top:10px;font-family:var(--clash);font-weight:500;font-size:12px;color:var(--hueso);mix-blend-mode:difference}
+.fade{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse at center,transparent 52%,rgba(233,234,228,.55) 78%,var(--hueso) 100%)}
+
+/* ---------- UI ---------- */
+.ui{position:fixed;inset:0;z-index:10;pointer-events:none;opacity:0;transition:opacity .6s}
+.ready .ui{opacity:1}
+.ui > *{pointer-events:auto}
+.top{position:absolute;left:24px;right:24px;top:20px;display:flex;justify-content:space-between;align-items:center}
+.logo{background:var(--hueso);border-radius:16px;padding:12px 18px;display:block}
+.logo img{height:38px;display:block;transition:transform .5s var(--ease)}
+.logo:hover img{transform:scale(1.06) rotate(-3deg)}
+.nav{display:flex;gap:8px;background:var(--hueso);padding:6px;border-radius:99px}
+.pill{height:44px;padding:0 22px;border-radius:99px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;transition:transform .35s var(--ease),filter .3s}
+.pill:hover{transform:translateY(-2px) scale(1.04)}
+.p-about{background:var(--arena)} .p-reel{background:var(--coral);color:var(--hueso)} .p-contact{background:var(--negro);color:var(--hueso)}
+.bottom{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;
+  background:var(--hueso);padding:10px 18px;border-radius:99px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;white-space:nowrap}
+.bottom i{width:8px;height:8px;border-radius:50%;background:var(--coral);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(.4);opacity:.4}}
+
+/* cursor: punto que se estira con la velocidad + etiqueta del proyecto */
+.cur{position:fixed;left:0;top:0;z-index:50;pointer-events:none}
+.cur-dot{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--coral);transition:width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),background .3s}
+.cur.drag .cur-dot{width:64px;height:64px;margin:-32px 0 0 -32px;background:var(--arena)}
+.cur-dot b{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--negro);opacity:0;transition:opacity .2s}
+.cur.drag .cur-dot b{opacity:1}
+.cur-label{position:absolute;left:20px;top:14px;white-space:nowrap;background:var(--negro);color:var(--hueso);border-radius:12px;padding:10px 14px;
+  transform:scale(.6);opacity:0;transform-origin:left top;transition:transform .35s var(--ease),opacity .25s}
+.cur.show .cur-label{transform:none;opacity:1}
+.cur-label strong{display:block;font-family:var(--clash);font-weight:600;font-size:22px;line-height:1}
+.cur-label small{display:block;margin-top:5px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+
+/* ---------- OVERLAYS ---------- */
+.overlay{position:fixed;inset:0;z-index:60;transform:translateY(100%);transition:transform .8s var(--ease);visibility:hidden;overflow:auto}
+.overlay.open{transform:none;visibility:visible}
+.close{position:fixed;top:24px;right:24px;z-index:3;height:46px;padding:0 22px;border-radius:99px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;background:var(--negro);color:var(--hueso)}
+
+.about{background:var(--coral);color:var(--hueso);padding:100px 6vw 60px;display:flex;flex-direction:column;justify-content:center;gap:6vh;min-height:100%}
+.about h2{font-family:var(--clash);font-weight:600;font-size:clamp(44px,7vw,124px);line-height:.92;max-width:14ch;position:relative;z-index:1}
+.about h2 em{font-style:normal;color:var(--negro)}
+.ideas{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative;z-index:1}
+.idea{background:var(--hueso);color:var(--negro);border-radius:20px;padding:22px;min-height:190px;display:flex;flex-direction:column;justify-content:space-between;
+  opacity:0;transform:translateY(40px) rotate(-2deg);transition:opacity .6s,transform .9s var(--ease)}
+.about.open .idea{opacity:1;transform:none}
+.about.open .idea:nth-child(2){transition-delay:.08s}.about.open .idea:nth-child(3){transition-delay:.16s}.about.open .idea:nth-child(4){transition-delay:.24s}
+.idea span{font-family:var(--clash);font-weight:500;font-size:14px;color:var(--coral)}
+.idea p{font-size:15px;line-height:1.4;font-weight:500}
+.idea p b{display:block;font-family:var(--clash);font-weight:600;font-size:clamp(20px,1.7vw,28px);line-height:1.02;margin-bottom:8px}
+.idea:nth-child(4){background:var(--negro);color:var(--hueso)}
+.about-iso{position:absolute;right:-6vw;bottom:-8vh;height:52vh;opacity:.18;pointer-events:none}
+
+.contact{background:var(--arena);padding:100px 6vw 60px;display:flex;flex-direction:column;justify-content:center;gap:5vh;min-height:100%}
+.contact h2{font-family:var(--clash);font-weight:600;font-size:clamp(52px,9vw,160px);line-height:.88}
+.c-opts{display:flex;gap:14px;flex-wrap:wrap}
+.c-opt{flex:1 1 280px;height:120px;border-radius:22px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;
+  font-family:var(--clash);font-weight:600;font-size:clamp(30px,3.2vw,52px);text-decoration:none;transition:transform .4s var(--ease)}
+.c-opt svg{width:40px;height:40px;transition:transform .5s var(--ease)}
+.c-opt:hover{transform:translateY(-4px)} .c-opt:hover svg{transform:rotate(45deg)}
+.c-wa{background:var(--menta);color:var(--negro)} .c-mail{background:var(--negro);color:var(--hueso)}
+
+.player{background:var(--negro);color:var(--hueso);display:flex;flex-direction:column;padding:24px;gap:16px}
+.player .close{background:var(--coral)}
+.p-title{font-family:var(--clash);font-weight:500;font-size:clamp(26px,3vw,48px);line-height:1;padding-right:150px}
+.p-title small{display:block;font-family:var(--satoshi);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--arena);margin-bottom:8px;font-weight:700}
+.player video{flex:1;min-height:0;width:100%;border-radius:22px;background:#000}
+.toast{position:fixed;left:50%;bottom:28px;z-index:120;transform:translate(-50%,calc(100% + 60px));background:var(--negro);color:var(--hueso);padding:14px 22px;border-radius:99px;font-size:13px;transition:transform .5s var(--ease)}
+.toast.show{transform:translate(-50%,0)}
+
+@media (max-width:820px){
+  .top{left:12px;right:12px;top:12px}
+  .logo{padding:9px 12px}.logo img{height:26px}
+  .pill{height:36px;padding:0 12px;font-size:10px;letter-spacing:.1em}
+  .nav{padding:4px;gap:4px}
+  .bottom{font-size:9px;bottom:14px}
+  .ideas{grid-template-columns:1fr 1fr}
+  .about,.contact{padding:90px 20px 40px}
+}
+@media (pointer:coarse){.cur{display:none}.wall{cursor:auto}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro"><img src="assets/logo-coral.png" alt="Un Montón"></div>
+
+<main class="wall" id="wall"></main>
+<div class="fade"></div>
+
+<div class="ui">
+  <header class="top">
+    <a class="logo" href="#" aria-label="Un Montón"><img src="assets/logo-coral.png" alt="Un Montón"></a>
+    <nav class="nav">
+      <button class="pill p-about" data-open="about">About</button>
+      <button class="pill p-reel" id="openReel">Reel</button>
+      <button class="pill p-contact" data-open="contact">Contact</button>
+    </nav>
+  </header>
+  <div class="bottom"><i></i><span id="hint">Arrastrá para explorar · 29 proyectos</span></div>
+</div>
+
+<div class="cur" id="cur"><div class="cur-dot"><b>DRAG</b></div><div class="cur-label"><strong id="curT"></strong><small id="curS"></small></div></div>
+
+<!-- ABOUT -->
+<section class="overlay about" id="about">
+  <button class="close" data-close>Cerrar ✕</button>
+  <img class="about-iso" src="assets/logo-hueso.png" alt="" aria-hidden="true">
+  <h2>Ya no hacemos solo contenido: hacemos <em>un montón.</em></h2>
+  <div class="ideas">
+    <div class="idea"><span>01</span><p><b>Nos reinventamos</b>para empezar de nuevo.</p></div>
+    <div class="idea"><span>02</span><p><b>Crecer no sucede por inercia.</b>Para volver a elegir hacia dónde queremos ir.</p></div>
+    <div class="idea"><span>03</span><p><b>Ideas con dirección.</b>Volvemos a creer en lo que construimos.</p></div>
+    <div class="idea"><span>04</span><p><b>Es una nueva etapa.</b>No es una nueva identidad.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="overlay contact" id="contact">
+  <button class="close" data-close>Close ✕</button>
+  <h2>Let’s make<br>un montón.</h2>
+  <div class="c-opts">
+    <a class="c-opt c-wa" href="#" id="ctaWhatsapp">WhatsApp<svg viewBox="0 0 40 40" fill="none"><path d="M9 31 31 9M13 9h18v18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+    <a class="c-opt c-mail" href="#" id="ctaMail">Mail<svg viewBox="0 0 40 40" fill="none"><path d="M9 31 31 9M13 9h18v18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+  </div>
+</section>
+
+<!-- PLAYER -->
+<section class="overlay player" id="player">
+  <button class="close" data-close>Cerrar ✕</button>
+  <h3 class="p-title" id="pTitle"></h3>
+  <video id="pVideo" controls playsinline></video>
+</section>
+<div class="toast" id="toast">Coming soon ✦</div>
+
+<script>
+const PROJECTS = [
+  ["1_FUTTTURA LATAM.mp4","Futttura","Latam"],
+  ["KALEU KALEU_V4.mp4","Kaleu Kaleu","Videoclip"],
+  ["PANDORA x Luisa Sonza___2.mp4","Pandora × Luísa Sonza","Brand"],
+  ["Luis Fonsi_Luna park_ALTA.mp4","Luis Fonsi","Luna Park"],
+  ["AFA_v10_ALTA.mp4","AFA","Spot"],
+  ["MOR - RECAP.mp4","MOR","Recap"],
+  ["Chocolinas Bumper 1 16x9.mp4","Chocolinas","Bumper"],
+  ["FUTTURA_TOUR 1ER PARTE_RECAP.mp4","Futttura Tour","Recap"],
+  ["Mar Esmeralda version 2.mp4","Mar Esmeralda","Film"],
+  ["HOLIDAYS MOMENTS_30s_16x9.mp4","Holidays Moments","Spot 30”"],
+  ["FER DENTE - Lanzamiento VOY_clip 1MIn_alta.mp4","Fer Dente · Voy","Lanzamiento"],
+  ["TierraDePecado_HD1080.mp4","Tierra de Pecado","Ficción"],
+  ["1_LA CASA_BS AS.mp4","La Casa","Buenos Aires"],
+  ["Talisman_30s_16x9-.mp4","Talisman","Spot 30”"],
+  ["FLOR BERTOTTI VID 2.mp4","Flor Bertotti","Videoclip"],
+  ["BTS Martha VC FINAL YT.mp4","Martha","Behind the scenes"],
+  ["01_Uruguay Recpa.mp4","Uruguay","Recap"],
+  ["Holyday TIMELESS_30s_16x9.mp4","Holiday Timeless","Spot 30”"],
+  ["Cali - Final 13 10.mp4","Cali","Film"],
+  ["VALENTINES_30seg.mp4","Valentine’s","Spot 30”"],
+  [" Expansion FINAL_1.mp4","Expansión","Brand"],
+  ["FUTTTURA_Recap Mexico.mp4","Futttura","Recap México"],
+  ["CALCIO_B_16.9.mp4","Calcio","Spot"],
+  ["COLAGENO_B_16.9.mp4","Colágeno","Spot"],
+  ["DIETA CONTROL_B_16.9.mp4","Dieta Control","Spot"],
+  ["TDP_16X9_final.mp4","TDP","16×9"],
+  ["il volo/Halleluja.mp4","Il Volo","Halleluja"],
+  ["yas/YAS_LA NIÑA_H264_3840x2160.mp4","YAS","La Niña"],
+  ["fiat cronos/Cronos Tecnologia y Pantalla v4.mp4","Fiat Cronos","Tecnología"],
+];
+const SHOWREEL = PROJECTS[0][0];             // reemplazar por el reel
+const CONTACT = { whatsapp:'', email:'' };   // completar más adelante
+const N = PROJECTS.length, $ = id => document.getElementById(id);
+const src = f => encodeURI('videos-web/'+f);
+const mod = (n,m)=>((n%m)+m)%m;
+const TAGS = ['#EF4123','#F2C972','#7FCBAE'];
+$('hint').textContent=`Arrastrá para explorar · ${N} proyectos`;
+
+/* ===== Intro: logo → barrido hacia arriba (corto) ===== */
+const intro=$('intro');
+requestAnimationFrame(()=>requestAnimationFrame(()=>intro.classList.add('in')));
+setTimeout(()=>{intro.classList.add('out');document.body.classList.add('ready')},900);
+setTimeout(()=>intro.remove(),1700);
+
+/* ===== Pared infinita ===== */
+const wall=$('wall');
+let W,H,GAP,cw,ch,cols,rows,tiles=[];
+function build(){
+  W=Math.round(Math.max(220,Math.min(380,innerWidth*.22))); H=Math.round(W*.62); GAP=Math.round(W*.07);
+  cw=W+GAP; ch=H+GAP;
+  cols=Math.ceil(innerWidth/cw)+3; rows=Math.ceil(innerHeight/ch)+3;
+  wall.innerHTML=''; tiles=[];
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const el=document.createElement('div'); el.className='tile';
+    el.style.width=W+'px'; el.style.height=H+'px';
+    const v=document.createElement('video'); v.muted=true; v.loop=true; v.playsInline=true; v.preload='metadata';
+    el.appendChild(v); wall.appendChild(el);
+    const t={el,v,c,r,idx:-1};
+    el.addEventListener('pointerenter',()=>{hover=t;el.classList.add('on');v.play().catch(()=>{});showLabel(t)});
+    el.addEventListener('pointerleave',()=>{if(hover===t)hover=null;el.classList.remove('on');v.pause();cur.classList.remove('show')});
+    tiles.push(t);
+  }
+}
+build(); addEventListener('resize',build);
+
+let camX=0,camY=0,tx=0,ty=0,pvx=0,pvy=0,vx=0,vy=0,hover=null;
+let dragging=false,lx=0,ly=0,moved=0;
+wall.addEventListener('pointerdown',e=>{dragging=true;lx=e.clientX;ly=e.clientY;moved=0;cur.classList.add('drag');cur.classList.remove('show')});
+addEventListener('pointermove',e=>{
+  mx=e.clientX;my=e.clientY;
+  if(!dragging) return;
+  tx+=(e.clientX-lx)*1.4; ty+=(e.clientY-ly)*1.4; moved+=Math.abs(e.clientX-lx)+Math.abs(e.clientY-ly);
+  lx=e.clientX; ly=e.clientY;
+});
+addEventListener('pointerup',()=>{dragging=false;cur.classList.remove('drag');if(hover)showLabel(hover)});
+wall.addEventListener('click',()=>{if(moved<8&&hover)openPlayer(PROJECTS[hover.idx])});
+addEventListener('wheel',e=>{if(document.querySelector('.overlay.open'))return;e.preventDefault();tx-=e.deltaX;ty-=e.deltaY},{passive:false});
+
+function frame(){
+  const idle=!dragging&&!document.querySelector('.overlay.open');
+  if(idle){tx-=.25;ty-=.12}
+  camX+=(tx-camX)*.08; camY+=(ty-camY)*.08;
+  vx=camX-pvx; vy=camY-pvy; pvx=camX; pvy=camY;
+  const cx0=innerWidth/2, cy0=innerHeight/2, R=Math.hypot(cx0,cy0);
+  const speed=Math.min(1,Math.hypot(vx,vy)/40);
+  tiles.forEach(t=>{
+    const x=mod(t.c*cw+camX,cols*cw)-cw;
+    const wx=Math.round((x-camX)/cw);                 // columna en el "mundo"
+    const off=mod(wx,2)?ch/2:0;                       // columnas alternadas desfasadas
+    const y=mod(t.r*ch+camY+off,rows*ch)-ch;
+    const wy=Math.round((y-camY-off)/ch);
+    const idx=mod(wx*7+wy*5,N);
+    if(idx!==t.idx){t.idx=idx;t.v.src=src(PROJECTS[idx][0])+'#t=2';t.el.dataset.n=String(idx+1).padStart(2,'0')}
+    // esfera: los bordes se achican y se acercan al centro
+    let sx=x+W/2, sy=y+H/2;
+    const dx=sx-cx0, dy=sy-cy0, d=Math.hypot(dx,dy)/R;
+    const sphere=Math.max(.4,1-d*d*.38);
+    sx=cx0+dx*(1-Math.min(d,1.4)*.1); sy=cy0+dy*(1-Math.min(d,1.4)*.1);
+    // lupa del cursor: agranda el más cercano y empuja a los vecinos
+    const md=Math.max(1,Math.hypot(sx-mx,sy-my)), k=Math.max(0,1-md/(W*1.4));
+    sx+=(sx-mx)/md*k*W*.16; sy+=(sy-my)/md*k*H*.16;
+    const s=sphere*(1+k*k*.22);
+    t.el.style.zIndex=Math.round(k*100);
+    t.el.style.transform=`translate3d(${sx-W/2}px,${sy-H/2}px,0) scale(${s.toFixed(3)}) skew(${(vx*.08).toFixed(2)}deg,${(vy*.04).toFixed(2)}deg)`;
+  });
+  requestAnimationFrame(frame);
+}
+
+/* ===== Cursor: se estira según la velocidad del mouse y del scroll ===== */
+const cur=$('cur'), dot=cur.querySelector('.cur-dot');
+let mx=innerWidth/2,my=innerHeight/2,cx=mx,cy=my;
+function showLabel(t){
+  if(dragging) return;
+  const p=PROJECTS[t.idx]; $('curT').textContent=p[1]; $('curS').textContent=p[2]; $('curS').style.color=TAGS[t.idx%3];
+  cur.classList.add('show');
+}
+document.addEventListener('pointerleave',()=>{mx=-200;my=-200});
+(function cursor(){
+  const px=cx,py=cy; cx+=(mx-cx)*.22; cy+=(my-cy)*.22;
+  const dvx=(cx-px)-vx*.5, dvy=(cy-py)-vy*.5;
+  const sp=Math.min(1.4,Math.hypot(dvx,dvy)/22), ang=Math.atan2(dvy,dvx);
+  cur.style.transform=`translate(${cx}px,${cy}px)`;
+  dot.style.transform=cur.classList.contains('drag')?'none':`rotate(${ang}rad) scale(${1+sp},${Math.max(.45,1-sp*.45)})`;
+  requestAnimationFrame(cursor);
+})();
+frame();
+
+/* ===== Overlays ===== */
+function open(o){o.scrollTop=0;o.classList.add('open')}
+function close(o){o.classList.remove('open');
+  if(o.id==='player') setTimeout(()=>{const v=$('pVideo');v.pause();v.removeAttribute('src');v.load()},800)}
+function openPlayer(p){$('pTitle').innerHTML=`<small>${p[2]}</small>${p[1]}`;const v=$('pVideo');v.src=src(p[0]);open($('player'));v.play().catch(()=>{})}
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>open($(b.dataset.open)));
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.closest('.overlay')));
+addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(close)});
+$('openReel').onclick=()=>openPlayer([SHOWREEL,'Showreel','Un Montón · 2027']);
+const toast=$('toast'); let tt;
+function soon(){toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),2200)}
+$('ctaWhatsapp').onclick=e=>{e.preventDefault(); if(!CONTACT.whatsapp) return soon();
+  window.open('https://wa.me/'+CONTACT.whatsapp+'?text='+encodeURIComponent('Hola Un Montón! Quiero contarles sobre un proyecto.'),'_blank')};
+$('ctaMail').onclick=e=>{e.preventDefault(); if(!CONTACT.email) return soon();
+  location.href='mailto:'+CONTACT.email+'?subject='+encodeURIComponent('Nuevo proyecto')};
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Videos originales (pesados): no se suben. La web usa videos-web/
+videos/
+
+# Configuración local
+.claude/
+.DS_Store
+._*
