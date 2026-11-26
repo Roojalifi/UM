@@ -217,8 +217,12 @@ button{font:inherit;color:inherit;background:none;border:0}
 .mail-form{display:none;margin-bottom:auto;background:var(--arena);color:var(--negro);border-radius:var(--r);padding:26px 28px;
   grid-template-columns:1fr 1fr;gap:14px;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .7s var(--ease)}
 .contact.mailing .options{display:none}
-.contact.mailing .mail-form{display:grid}
-.contact.mailing .mail-form.in{opacity:1;transform:none}
+.mail-form.show{display:grid}
+.mail-form.show.in{opacity:1;transform:none}
+.mail-form.wa{background:var(--menta)}
+.mail-form.wa .mf-send{box-shadow:0 5px 0 var(--hueso)}
+.mail-form.wa .mf-send:hover{box-shadow:0 3px 0 var(--hueso)}
+.mail-form.wa .mf-send i{background:#25D366}
 .mf-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
 .mf-back{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:8px 14px;border-radius:99px;background:rgba(26,26,26,.08);transition:background .3s}
 .mf-back:hover{background:rgba(26,26,26,.16)}
@@ -398,7 +402,7 @@ button{font:inherit;color:inherit;background:none;border:0}
     </a>
   </div>
   <form class="mail-form" id="mailForm" novalidate>
-    <div class="mf-top"><span>Escribinos un mail</span><button type="button" class="mf-back" id="mfBack">← Volver</button></div>
+    <div class="mf-top"><span>Escribinos un mail</span><button type="button" class="mf-back" data-back>← Volver</button></div>
     <div class="mf-fields">
       <label>Nombre<input name="nombre" type="text" autocomplete="name" required></label>
       <label>Tu mail<input name="email" type="email" autocomplete="email" required></label>
@@ -407,6 +411,14 @@ button{font:inherit;color:inherit;background:none;border:0}
       <div class="mf-foot"><span class="mf-status" id="mfStatus"></span><button class="mf-send" id="mfSend" type="submit">Enviar <i>→</i></button></div>
     </div>
     <div class="mf-done">¡Gracias! Recibimos tu mensaje.<small>Te respondemos a la brevedad.</small></div>
+  </form>
+  <form class="mail-form wa" id="waForm" novalidate>
+    <div class="mf-top"><span>Escribinos por WhatsApp</span><button type="button" class="mf-back" data-back>← Volver</button></div>
+    <div class="mf-fields">
+      <label class="full">Nombre<input name="nombre" type="text" autocomplete="name" required></label>
+      <label class="full">Contanos tu proyecto<textarea name="mensaje" required></textarea></label>
+      <div class="mf-foot"><span class="mf-status" id="waStatus">Se abre WhatsApp con tu mensaje listo para enviar.</span><button class="mf-send" type="submit">Enviar por WhatsApp <i>→</i></button></div>
+    </div>
   </form>
 </section>
 <div class="toast" id="toast">Muy pronto</div>
@@ -561,25 +573,34 @@ document.getElementById('openContact').onclick=()=>open(document.getElementById(
 
 /* ===== Contacto: completar cuando esté listo ===== */
 const CONTACT = {
-  whatsapp: '',   // ej: '5491112345678' (código país + área + número, sin + ni espacios)
+  whatsapp: '5491163600711',   // código país + área + número, sin + ni espacios
   email: 'hola@unmonton.com'   // a este mail llegan los mensajes del formulario
 };
 const toast=document.getElementById('toast'); let toastT;
 function soon(){toast.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toast.classList.remove('show'),2200)}
-document.getElementById('ctaWhatsapp').onclick=e=>{e.preventDefault();
-  if(!CONTACT.whatsapp) return soon();
-  window.open('https://wa.me/'+CONTACT.whatsapp+'?text='+encodeURIComponent('Hola UN MONTÓN! Quiero contarles sobre un proyecto.'),'_blank');
-};
+
 /* Mail: formulario que se envía desde la misma web (servicio gratuito FormSubmit) */
 const contactEl=document.getElementById('contact'), mailForm=document.getElementById('mailForm'), mfStatus=document.getElementById('mfStatus'), mfSend=document.getElementById('mfSend');
-document.getElementById('ctaMail').onclick=e=>{e.preventDefault();
-  if(!CONTACT.email) return soon();
-  mailForm.classList.remove('sent'); mfStatus.textContent='';
-  contactEl.classList.add('mailing'); requestAnimationFrame(()=>requestAnimationFrame(()=>mailForm.classList.add('in')));
-  setTimeout(()=>mailForm.querySelector('input').focus({preventScroll:true}),400);
-};
-function closeMailForm(){mailForm.classList.remove('in');contactEl.classList.remove('mailing')}
-document.getElementById('mfBack').onclick=closeMailForm;
+const waForm=document.getElementById('waForm'), waStatus=document.getElementById('waStatus');
+function showForm(form){
+  form.classList.remove('sent'); contactEl.classList.add('mailing'); form.classList.add('show');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>form.classList.add('in')));
+  if(matchMedia('(pointer:fine)').matches) setTimeout(()=>form.querySelector('input').focus({preventScroll:true}),400);
+}
+function closeMailForm(){[mailForm,waForm].forEach(f=>f.classList.remove('in','show'));contactEl.classList.remove('mailing')}
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=closeMailForm);
+document.getElementById('ctaMail').onclick=e=>{e.preventDefault(); if(!CONTACT.email) return soon(); mfStatus.textContent=''; showForm(mailForm)};
+document.getElementById('ctaWhatsapp').onclick=e=>{e.preventDefault(); if(!CONTACT.whatsapp) return soon(); showForm(waForm)};
+
+/* WhatsApp: arma el mensaje con lo que escribieron y abre WhatsApp listo para enviar */
+waForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const d=Object.fromEntries(new FormData(waForm));
+  if(!d.nombre.trim()||!d.mensaje.trim()) return waStatus.textContent='Completá tu nombre y el mensaje.';
+  const txt='Hola UN MONTÓN! Soy '+d.nombre.trim()+'. Quiero contarles sobre un proyecto:\n\n'+d.mensaje.trim();
+  window.open('https://wa.me/'+CONTACT.whatsapp+'?text='+encodeURIComponent(txt),'_blank','noopener');
+  waStatus.textContent='¡Listo! Terminá de enviarlo en WhatsApp.';
+});
 contactEl.querySelector('[data-close]').addEventListener('click',()=>setTimeout(closeMailForm,900));
 mailForm.addEventListener('submit',async e=>{
   e.preventDefault();
