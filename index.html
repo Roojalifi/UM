@@ -565,11 +565,11 @@ tick();
 /* ===== Overlays ===== */
 const about=document.getElementById('about'), player=document.getElementById('player'),
       pv=document.getElementById('playerVideo'), pt=document.getElementById('playerTitle');
-function open(o){o.scrollTop=0;o.classList.add('open')}
+function openOverlay(o){o.scrollTop=0;o.classList.add('open')}
 function close(o){o.classList.remove('open'); if(o===player){setTimeout(()=>{pv.pause();pv.removeAttribute('src');pv.load()},900)}}
-function openPlayer(p){pt.innerHTML=`<small>${p[2]}</small>${p[1]}`;pv.src=src(p[0]);open(player);pv.play().catch(()=>{})}
-document.getElementById('openAbout').onclick=()=>open(about);
-document.getElementById('openContact').onclick=()=>open(document.getElementById('contact'));
+function openPlayer(p){pt.innerHTML=`<small>${p[2]}</small>${p[1]}`;pv.src=src(p[0]);openOverlay(player);pv.play().catch(()=>{})}
+document.getElementById('openAbout').onclick=()=>openOverlay(about);
+document.getElementById('openContact').onclick=()=>openOverlay(document.getElementById('contact'));
 
 /* ===== Contacto: completar cuando esté listo ===== */
 const CONTACT = {
@@ -598,7 +598,9 @@ waForm.addEventListener('submit',e=>{
   const d=Object.fromEntries(new FormData(waForm));
   if(!d.nombre.trim()||!d.mensaje.trim()) return waStatus.textContent='Completá tu nombre y el mensaje.';
   const txt='Hola UN MONTÓN! Soy '+d.nombre.trim()+'. Quiero contarles sobre un proyecto:\n\n'+d.mensaje.trim();
-  window.open('https://wa.me/'+CONTACT.whatsapp+'?text='+encodeURIComponent(txt),'_blank','noopener');
+  const url='https://wa.me/'+CONTACT.whatsapp+'?text='+encodeURIComponent(txt);
+  const w=window.open(url,'_blank');
+  if(w) w.opener=null; else location.href=url;   // si el navegador bloquea la ventana nueva, va directo
   waStatus.textContent='¡Listo! Terminá de enviarlo en WhatsApp.';
 });
 contactEl.querySelector('[data-close]').addEventListener('click',()=>setTimeout(closeMailForm,900));
