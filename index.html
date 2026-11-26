@@ -213,6 +213,34 @@ button{font:inherit;color:inherit;background:none;border:0}
 .option:hover .option-top svg{transform:rotate(45deg)}
 .option-name{font-family:var(--clash);font-weight:600;font-size:clamp(36px,4.4vw,72px);line-height:.95;letter-spacing:-.02em}
 .option-detail{font-size:14px;font-weight:500;margin-top:8px;opacity:.75}
+/* Formulario de mail (se envía desde la web) */
+.mail-form{display:none;margin-bottom:auto;background:var(--arena);color:var(--negro);border-radius:var(--r);padding:26px 28px;
+  grid-template-columns:1fr 1fr;gap:14px;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .7s var(--ease)}
+.contact.mailing .options{display:none}
+.contact.mailing .mail-form{display:grid}
+.contact.mailing .mail-form.in{opacity:1;transform:none}
+.mf-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.mf-back{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:8px 14px;border-radius:99px;background:rgba(26,26,26,.08);transition:background .3s}
+.mf-back:hover{background:rgba(26,26,26,.16)}
+.mail-form label{display:flex;flex-direction:column;gap:6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.mail-form .full{grid-column:1/-1}
+.mail-form input,.mail-form textarea{font:inherit;font-family:var(--satoshi);font-size:16px;letter-spacing:0;text-transform:none;font-weight:500;color:var(--negro);
+  background:var(--hueso);border:2px solid transparent;border-radius:14px;padding:13px 16px;outline:none;transition:border-color .25s}
+.mail-form textarea{min-height:120px;resize:vertical}
+.mail-form input:focus,.mail-form textarea:focus{border-color:var(--negro)}
+.mf-honey{position:absolute;left:-9999px;opacity:0}
+.mf-foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.mf-status{font-size:14px;font-weight:500}
+.mf-send{display:inline-flex;align-items:center;gap:12px;height:54px;padding:0 10px 0 24px;border-radius:99px;background:var(--negro);color:var(--hueso);
+  font-family:var(--clash);font-weight:500;font-size:20px;box-shadow:0 5px 0 var(--coral);transition:transform .25s var(--ease),box-shadow .25s var(--ease),opacity .3s}
+.mf-send i{width:36px;height:36px;border-radius:50%;background:var(--coral);display:grid;place-items:center;font-style:normal}
+.mf-send:hover{transform:translateY(2px);box-shadow:0 3px 0 var(--coral)}
+.mf-send:disabled{opacity:.5;pointer-events:none}
+.mail-form.sent .mf-fields{display:none}
+.mf-done{display:none;grid-column:1/-1;font-family:var(--clash);font-weight:600;font-size:clamp(28px,3vw,46px);line-height:1}
+.mf-done small{display:block;margin-top:10px;font-family:var(--satoshi);font-weight:500;font-size:15px}
+.mail-form.sent .mf-done{display:block}
+.mf-fields{display:contents}
 .toast{position:fixed;left:50%;bottom:28px;z-index:120;transform:translate(-50%,calc(100% + 60px));background:var(--negro);color:var(--hueso);
   padding:14px 22px;border-radius:99px;font-size:13px;font-weight:500;transition:transform .5s var(--ease)}
 .toast.show{transform:translate(-50%,0)}
@@ -259,6 +287,9 @@ button{font:inherit;color:inherit;background:none;border:0}
   .about .about-top{padding-right:130px;font-size:10px}
   .options{grid-template-columns:1fr}
   .option{min-height:150px}
+  .mail-form{grid-template-columns:1fr;padding:18px 16px;gap:10px}
+  .mail-form textarea{min-height:96px}
+  .mf-send{height:48px;font-size:18px}
   .next{width:58px;height:58px;right:18px;bottom:16px}
   .footer .hide-m{display:none}
 }
@@ -366,6 +397,17 @@ button{font:inherit;color:inherit;background:none;border:0}
       <div><div class="option-name">Mail</div><div class="option-detail">hola@unmonton.com</div></div>
     </a>
   </div>
+  <form class="mail-form" id="mailForm" novalidate>
+    <div class="mf-top"><span>Escribinos un mail</span><button type="button" class="mf-back" id="mfBack">← Volver</button></div>
+    <div class="mf-fields">
+      <label>Nombre<input name="nombre" type="text" autocomplete="name" required></label>
+      <label>Tu mail<input name="email" type="email" autocomplete="email" required></label>
+      <label class="full">Contanos tu proyecto<textarea name="mensaje" required></textarea></label>
+      <input class="mf-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="mf-foot"><span class="mf-status" id="mfStatus"></span><button class="mf-send" id="mfSend" type="submit">Enviar <i>→</i></button></div>
+    </div>
+    <div class="mf-done">¡Gracias! Recibimos tu mensaje.<small>Te respondemos a la brevedad.</small></div>
+  </form>
 </section>
 <div class="toast" id="toast">Muy pronto</div>
 
@@ -520,7 +562,7 @@ document.getElementById('openContact').onclick=()=>open(document.getElementById(
 /* ===== Contacto: completar cuando esté listo ===== */
 const CONTACT = {
   whatsapp: '',   // ej: '5491112345678' (código país + área + número, sin + ni espacios)
-  email: ''       // ej: 'hola@unmonton.com'
+  email: 'hola@unmonton.com'   // a este mail llegan los mensajes del formulario
 };
 const toast=document.getElementById('toast'); let toastT;
 function soon(){toast.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toast.classList.remove('show'),2200)}
@@ -528,10 +570,34 @@ document.getElementById('ctaWhatsapp').onclick=e=>{e.preventDefault();
   if(!CONTACT.whatsapp) return soon();
   window.open('https://wa.me/'+CONTACT.whatsapp+'?text='+encodeURIComponent('Hola UN MONTÓN! Quiero contarles sobre un proyecto.'),'_blank');
 };
+/* Mail: formulario que se envía desde la misma web (servicio gratuito FormSubmit) */
+const contactEl=document.getElementById('contact'), mailForm=document.getElementById('mailForm'), mfStatus=document.getElementById('mfStatus'), mfSend=document.getElementById('mfSend');
 document.getElementById('ctaMail').onclick=e=>{e.preventDefault();
   if(!CONTACT.email) return soon();
-  location.href='mailto:'+CONTACT.email+'?subject='+encodeURIComponent('Nuevo proyecto');
+  mailForm.classList.remove('sent'); mfStatus.textContent='';
+  contactEl.classList.add('mailing'); requestAnimationFrame(()=>requestAnimationFrame(()=>mailForm.classList.add('in')));
+  setTimeout(()=>mailForm.querySelector('input').focus({preventScroll:true}),400);
 };
+function closeMailForm(){mailForm.classList.remove('in');contactEl.classList.remove('mailing')}
+document.getElementById('mfBack').onclick=closeMailForm;
+contactEl.querySelector('[data-close]').addEventListener('click',()=>setTimeout(closeMailForm,900));
+mailForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const d=Object.fromEntries(new FormData(mailForm));
+  if(d._honey) return;
+  if(!d.nombre.trim()||!d.mensaje.trim()) return mfStatus.textContent='Completá tu nombre y el mensaje.';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return mfStatus.textContent='Revisá tu mail.';
+  mfSend.disabled=true; mfStatus.textContent='Enviando…';
+  try{
+    const r=await fetch('https://formsubmit.co/ajax/'+CONTACT.email,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+      body:JSON.stringify({Nombre:d.nombre,Email:d.email,Mensaje:d.mensaje,_subject:'Nuevo contacto desde la web de UN MONTÓN',_replyto:d.email,_template:'table',_captcha:'false'})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||j.success===false||j.success==='false') throw new Error(j.message||'error');
+    mailForm.reset(); mailForm.classList.add('sent');
+  }catch(err){
+    mfStatus.textContent='No se pudo enviar. Probá de nuevo en un momento.';
+  }finally{mfSend.disabled=false}
+});
 
 /* ===== Efecto del mouse: el video se deforma como líquido según la velocidad ===== */
 const noise=document.getElementById('liquidNoise'), map=document.getElementById('liquidMap'), shift=document.getElementById('liquidShift');
