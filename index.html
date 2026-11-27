@@ -519,7 +519,7 @@ function layout(){
   let pos=0;
 const mobile=window.innerWidth<820;
 // celular: todas las tarjetas en 16:9, grandes y pegadas arriba del carrusel · compu: igual que siempre
-const mw=Math.round(Math.min(window.innerWidth*.88,(H*.95)*16/9)), mh=Math.round(mw*9/16);
+const mw=Math.round(Math.min(window.innerWidth*.98,(H*.95)*16/9)), mh=Math.round(mw*9/16);
 cards.forEach(c=>{
   c.w=mobile?mw:Math.round(H*c.ratio);
   c.el.style.height=mobile?mh+'px':''; c.el.style.top=mobile?Math.min(10,Math.round((H-mh)/2))+"px":"";
